@@ -12,6 +12,7 @@ import {
   CarbonFootprintFormSchema,
   CarbonFootprintFormValues,
   CalculateResponse,
+  CalculateRequest,
 } from "@/lib/schemas";
 import { calculateCarbonFootprint, getAvailableCountries } from "@/lib/api";
 import { BasicInfoSection } from "./form-sections/basic-info-section";
@@ -85,7 +86,8 @@ export function CarbonCalculatorForm() {
     setIsCalculating(true);
     setCalculationResult(null);
     try {
-      const result = await calculateCarbonFootprint(values);
+      const payload: CalculateRequest = CarbonFootprintFormSchema.parse(values);
+      const result = await calculateCarbonFootprint(payload);
       setCalculationResult(result);
       toast.success("Carbon footprint calculated successfully!");
     } catch (error: any) {
