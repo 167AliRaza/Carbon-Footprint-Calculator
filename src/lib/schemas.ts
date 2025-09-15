@@ -81,4 +81,5 @@ export type ElectricityFactorResponse = z.infer<typeof ElectricityFactorResponse
 
 // Form Schema (combines request schema with default values for form)
 export const CarbonFootprintFormSchema = CalculateRequestSchema; // Simplified
-export type CarbonFootprintFormValues = z.infer<typeof CarbonFootprintFormSchema>;
+// Use Zod input type for react-hook-form compatibility (fields with defaults can be omitted in input)
+export type CarbonFootprintFormValues = z.input<typeof CarbonFootprintFormSchema>;
