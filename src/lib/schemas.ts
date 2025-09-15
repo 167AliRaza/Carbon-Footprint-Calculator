@@ -2,14 +2,14 @@ import { z } from "zod";
 
 // API Request Schemas
 export const SecondarySpendingSchema = z.object({
-  food_and_drink: z.number().min(0).default(0),
-  clothing: z.number().min(0).default(0),
-  electronics: z.number().min(0).default(0),
-  furniture: z.number().min(0).default(0),
-  health_beauty: z.number().min(0).default(0),
-  recreation_culture: z.number().min(0).default(0),
-  hotels_restaurants: z.number().min(0).default(0),
-  other_goods_services: z.number().min(0).default(0),
+  food_and_drink: z.number().min(0).optional().default(0),
+  clothing: z.number().min(0).optional().default(0),
+  electronics: z.number().min(0).optional().default(0),
+  furniture: z.number().min(0).optional().default(0),
+  health_beauty: z.number().min(0).optional().default(0),
+  recreation_culture: z.number().min(0).optional().default(0),
+  hotels_restaurants: z.number().min(0).optional().default(0),
+  other_goods_services: z.number().min(0).optional().default(0),
 });
 
 export const CalculateRequestSchema = z.object({
@@ -80,8 +80,5 @@ export const ElectricityFactorResponseSchema = z.object({
 export type ElectricityFactorResponse = z.infer<typeof ElectricityFactorResponseSchema>;
 
 // Form Schema (combines request schema with default values for form)
-export const CarbonFootprintFormSchema = CalculateRequestSchema.extend({
-  // Add any form-specific fields or refinements here if needed
-});
-
+export const CarbonFootprintFormSchema = CalculateRequestSchema; // Simplified
 export type CarbonFootprintFormValues = z.infer<typeof CarbonFootprintFormSchema>;
