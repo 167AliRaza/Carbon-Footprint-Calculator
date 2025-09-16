@@ -7,12 +7,16 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"; // Import Tabs components
 import {
   CarbonFootprintFormSchema,
   CarbonFootprintFormValues,
   CalculateResponse,
-  CalculateRequest,
 } from "@/lib/schemas";
 import { calculateCarbonFootprint, getAvailableCountries } from "@/lib/api";
 import { BasicInfoSection } from "./form-sections/basic-info-section";
@@ -86,8 +90,7 @@ export function CarbonCalculatorForm() {
     setIsCalculating(true);
     setCalculationResult(null);
     try {
-      const payload: CalculateRequest = CarbonFootprintFormSchema.parse(values);
-      const result = await calculateCarbonFootprint(payload);
+      const result = await calculateCarbonFootprint(values);
       setCalculationResult(result);
       toast.success("Carbon footprint calculated successfully!");
     } catch (error: any) {
@@ -110,54 +113,56 @@ export function CarbonCalculatorForm() {
           <FormProvider {...form}>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
-                    1. Basic Information
-                  </h2>
-                  <BasicInfoSection
-                    countries={countries}
-                    isLoadingCountries={isLoadingCountries}
-                  />
-                </section>
+                <Tabs defaultValue="basic-info" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
+                    <TabsTrigger value="basic-info">Basic Info</TabsTrigger>
+                    <TabsTrigger value="energy">Energy</TabsTrigger>
+                    <TabsTrigger value="transportation">Transportation</TabsTrigger>
+                    <TabsTrigger value="flights">Flights</TabsTrigger>
+                    <TabsTrigger value="spending">Spending</TabsTrigger>
+                  </TabsList>
 
-                <Separator />
+                  <TabsContent value="basic-info" className="mt-6">
+                    <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
+                      1. Basic Information
+                    </h2>
+                    <BasicInfoSection
+                      countries={countries}
+                      isLoadingCountries={isLoadingCountries}
+                    />
+                  </TabsContent>
 
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
-                    2. Energy Consumption
-                  </h2>
-                  <EnergyConsumptionSection />
-                </section>
+                  <TabsContent value="energy" className="mt-6">
+                    <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
+                      2. Energy Consumption
+                    </h2>
+                    <EnergyConsumptionSection />
+                  </TabsContent>
 
-                <Separator />
+                  <TabsContent value="transportation" className="mt-6">
+                    <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
+                      3. Transportation
+                    </h2>
+                    <TransportationSection />
+                  </TabsContent>
 
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
-                    3. Transportation
-                  </h2>
-                  <TransportationSection />
-                </section>
+                  <TabsContent value="flights" className="mt-6">
+                    <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
+                      4. Flights
+                    </h2>
+                    <FlightsSection />
+                  </TabsContent>
 
-                <Separator />
-
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
-                    4. Flights
-                  </h2>
-                  <FlightsSection />
-                </section>
-
-                <Separator />
-
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
-                    5. Secondary Spending
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Enter your estimated annual spending in each category.
-                  </p>
-                  <SecondarySpendingSection />
-                </section>
+                  <TabsContent value="spending" className="mt-6">
+                    <h2 className="text-2xl font-semibold mb-4 text-accent-foreground">
+                      5. Secondary Spending
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Enter your estimated annual spending in each category.
+                    </p>
+                    <SecondarySpendingSection />
+                  </TabsContent>
+                </Tabs>
 
                 <Button type="submit" className="w-full" disabled={isCalculating}>
                   {isCalculating ? "Calculating..." : "Calculate Footprint"}
