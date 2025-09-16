@@ -96,10 +96,12 @@ export function CarbonCalculatorForm() {
       const result = await calculateCarbonFootprint(values);
       setCalculationResult(result);
       toast.success("Carbon footprint calculated successfully!");
-      // Scroll to results after successful calculation
-      if (resultsRef.current) {
-        resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      // Scroll to results after successful calculation with a small delay
+      setTimeout(() => {
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100); // A small delay of 100ms
     } catch (error: any) {
       toast.error(error.message || "Failed to calculate carbon footprint.");
       console.error("Calculation error:", error);
@@ -181,7 +183,7 @@ export function CarbonCalculatorForm() {
       </Card>
 
       {calculationResult && (
-        <div ref={resultsRef} className="mt-8"> {/* Attach the ref here */}
+        <div ref={resultsRef} className="mt-8">
           <CarbonFootprintResults result={calculationResult} />
         </div>
       )}
