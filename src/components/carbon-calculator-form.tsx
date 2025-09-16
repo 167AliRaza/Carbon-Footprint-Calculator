@@ -63,6 +63,7 @@ export function CarbonCalculatorForm() {
   const [isCalculating, setIsCalculating] = useState(false);
 
   const resultsRef = useRef<HTMLDivElement>(null); // Create a ref for the results section
+  const formRef = useRef<HTMLFormElement>(null); // Create a ref for the form section
 
   const form = useForm<CarbonFootprintFormValues>({
     resolver: zodResolver(CarbonFootprintFormSchema),
@@ -110,6 +111,16 @@ export function CarbonCalculatorForm() {
     }
   };
 
+  const handleNewCalculation = () => {
+    setCalculationResult(null); // Clear the results
+    form.reset(defaultValues); // Reset the form to default values
+    // Scroll to the top of the form
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    toast.info("Form reset for a new calculation.");
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <Card className="shadow-lg">
@@ -121,7 +132,7 @@ export function CarbonCalculatorForm() {
         <CardContent>
           <FormProvider {...form}>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <Tabs defaultValue="basic-info" className="w-full">
                   <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
                     <TabsTrigger value="basic-info">Basic Info</TabsTrigger>
@@ -176,6 +187,16 @@ export function CarbonCalculatorForm() {
                 <Button type="submit" className="w-full" disabled={isCalculating}>
                   {isCalculating ? "Calculating..." : "Calculate Footprint"}
                 </Button>
+                {calculationResult && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full mt-4"
+                    onClick={handleNewCalculation}
+                  >
+                    New Calculation
+                  </Button>
+                )}
               </form>
             </Form>
           </FormProvider>
