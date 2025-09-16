@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -12,12 +12,13 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"; // Import Tabs components
+} from "@/components/ui/tabs";
 import {
   CarbonFootprintFormSchema,
   CarbonFootprintFormValues,
   CalculateResponse,
-} from "@/lib/schemas";
+}
+from "@/lib/schemas";
 import { calculateCarbonFootprint, getAvailableCountries } from "@/lib/api";
 import { BasicInfoSection } from "./form-sections/basic-info-section";
 import { EnergyConsumptionSection } from "./form-sections/energy-consumption-section";
@@ -61,6 +62,8 @@ export function CarbonCalculatorForm() {
     useState<CalculateResponse | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
+  const resultsRef = useRef<HTMLDivElement>(null); // Create a ref for the results section
+
   const form = useForm<CarbonFootprintFormValues>({
     resolver: zodResolver(CarbonFootprintFormSchema),
     defaultValues,
@@ -93,6 +96,10 @@ export function CarbonCalculatorForm() {
       const result = await calculateCarbonFootprint(values);
       setCalculationResult(result);
       toast.success("Carbon footprint calculated successfully!");
+      // Scroll to results after successful calculation
+      if (resultsRef.current) {
+        resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to calculate carbon footprint.");
       console.error("Calculation error:", error);
@@ -174,7 +181,7 @@ export function CarbonCalculatorForm() {
       </Card>
 
       {calculationResult && (
-        <div className="mt-8">
+        <div ref={resultsRef} className="mt-8"> {/* Attach the ref here */}
           <CarbonFootprintResults result={calculationResult} />
         </div>
       )}
