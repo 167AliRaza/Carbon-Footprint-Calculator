@@ -1,5 +1,5 @@
 import {
-  CalculateRequest,
+  CalculateRequestSchema,
   CalculateResponseSchema,
   CountriesResponseSchema,
   ElectricityFactorResponseSchema,
@@ -8,14 +8,15 @@ import {
 const BASE_URL = "https://167aliraza-agentic-carbon-footprint-assistant.hf.space";
 
 export async function calculateCarbonFootprint(
-  data: CalculateRequest
+  data: typeof CalculateRequestSchema._input
 ): Promise<typeof CalculateResponseSchema._type> {
+  const parsed = CalculateRequestSchema.parse(data);
   const response = await fetch(`${BASE_URL}/calculate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(parsed),
   });
 
   if (!response.ok) {
